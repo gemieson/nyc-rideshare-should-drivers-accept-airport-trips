@@ -13,5 +13,8 @@ Using 1.9 million NYC TLC High Volume FHV trips from 2024 to 2025, a regression 
 - To keep trips representative of typical city travel, the sample was restricted to trips under two hours.
 
 ### Methodology
+Based on the aggregation, airport drop-offs show meaningfully higher average earnings than non-airport trips. 
+![Driver Revenue Per Hour Group By Trip Types](images/aggregation.png)
 
+This however, is confounded by trip length, time of day, and borough of origin, all of which independently influence driver earnings. In order to isolate these variables a linear regression of **log(driver_pay) ~ is_JFK + is_LGA + is_EWR + C(hour) + C(borough) + log(trip_duration)** was applied. 
 
