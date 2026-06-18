@@ -23,6 +23,17 @@ This however, is confounded by trip length, time of day, and borough of origin, 
 
 #### Simulation
 
+The simulation models a three-hour shift and compares total expected earnings across three paths: staying in the city, taking a JFK dropoff, or taking an LGA dropoff. For each borough and hour combination, 10,000 shifts were simulated and the path with the highest mean earnings was recommended.
+
+**Key Assumptions**
+- Drivers always join the airport queue after dropoff with no immediate deadhead
+- Return trip probability is proxied by the hourly pickup to dropoff ratio at each airport, capped at 1
+- Wait time follows a log-normal distribution parameterized by the pickup to dropoff ratio
+- Fare and trip duration inputs are averaged by borough and hour from the raw data
+
+The city baseline applies the average local earnings rate over 180 minutes at 58% utilization.
+
+
 
 
 
