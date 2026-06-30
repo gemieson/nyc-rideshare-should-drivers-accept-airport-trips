@@ -25,6 +25,9 @@ This however, is confounded by trip length, time of day, and borough of origin, 
 <img src="images/lin2.png" width="500">
 <img src="images/lin3.png" width="500">
 
+The model explains roughly 87% of the variation in log driver pay, and all three airport indicators are positive, large, and statistically significant. Holding trip duration, hour, and borough constant, we interpret the airport coefficients using the formula $(e^{b} - 1) \times 100$ which gives the true percentage change in driver pay associated with each airport relative to a comparable non-airport trip. A JFK dropoff is associated with a 21.5% pay premium, LGA with 22.0%, and EWR with 49.2%. The log duration coefficient of 0.93 confirms that pay grows nearly proportionally with trip length. Hour and borough fixed effects behave as expected, with late night hours and Staten Island pickups commanding the highest premiums, and midday hours and Brooklyn pickups the lowest.
+
+The normality assumption is violated, indicating a heavy right tail even after transformation. However, with 1.9 million observations and HC3 robust standard errors, coefficient estimates remain consistent and inference remains valid.
 
 #### Simulation
 
