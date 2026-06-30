@@ -31,7 +31,15 @@ The simulation models a three-hour shift and compares total expected earnings ac
 - Wait time follows a log-normal distribution parameterized by the pickup to dropoff ratio
 - Fare and trip duration inputs are averaged by borough and hour from the raw data
 
-The city baseline applies the average local earnings rate over 180 minutes at 58% utilization.
+The city baseline applies the average local earnings rate over 180 minutes at 58% utilization. Airport paths accumulate earnings across three stages (outbound fare, wait time, and return trip), each drawn from distributions parameterized by the borough-airport-hour averages. If no return trip is secured, the driver deadheads back. Remaining time on each path is filled with local trips at borough-hour average rates, and the recommended path is the one with the highest mean earnings.
+
+<img src="images/heatmap.png" width="700">
+
+#### Results
+
+JFK dominates recommendations across most boroughs and hours, particularly from 7pm to 2am, while LGA is competitive through the mid-day window, most clearly in Brooklyn and Staten Island, where LGA holds the recommendation almost continuously from around 7am to 6pm. Queens breaks this pattern, since rather than favoring an airport all day, it reverts to the city baseline during the late-morning to early-afternoon stretch (roughly 8:30am to 1:30pm), and even outside that window its airport advantage in dollar terms is consistently among the smallest of the five boroughs, often just $1 to $20, compared to $30 to $50+ elsewhere. The city baseline is otherwise only preferred during the overnight and early morning hours (roughly 3:00 to 6:00), when return trip probability is low and the wait cost outweighs the fare premium. Staten Island shows the highest airport premium in terms of pay, consistent with its far distance from the airports. Queens, by contrast, shows the weakest airport advantage overall, likely because drivers are already close to both airports and face a higher opportunity cost of leaving; the marginal benefit of detouring to an airport pickup is small when you're already near one. Overall, the airport premium is real but time sensitive, with the size of the benefit depending heavily on the borough's baseline proximity to JFK and LGA.
+
+
 
 
 
