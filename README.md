@@ -21,6 +21,11 @@ Based on the aggregation, airport drop-offs show meaningfully higher average ear
 
 This however, is confounded by trip length, time of day, and borough of origin, all of which independently influence driver earnings. In order to isolate these variables a linear regression of **log(driver_pay) ~ is_JFK + is_LGA + is_EWR + C(hour) + C(borough) + log(trip_duration)** was applied. Linear regression is appropriate here because driver pay is a continuous outcome and trip duration exhibits a roughly linear relationship with earnings. Log transformations were applied in an attempt to make errors of constant variance.
 
+<img src="images/lin1.png" width="500">
+<img src="images/lin2.png" width="500">
+<img src="images/lin3.png" width="500">
+
+
 #### Simulation
 
 The simulation models a three-hour shift and compares total expected earnings across three paths: staying in the city, taking a JFK dropoff, or taking an LGA dropoff. For each borough and hour combination, 10,000 shifts were simulated and the path with the highest mean earnings was recommended.
