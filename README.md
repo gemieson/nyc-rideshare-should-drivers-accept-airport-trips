@@ -99,12 +99,6 @@ The analysis observes pay but not costs. Fuel, tolls, depreciation, and the driv
 
 The data covers 2024 and 2025 only. Queue dynamics depend on platform policy and driver supply, both of which change, so the borough-hour recommendations are descriptive of this period rather than stable rules.
 
-### Conclusion
-
-The airport premium is real, substantial, and unevenly distributed. Controlling for duration, hour, and borough of origin, dropoffs at JFK, LGA, and EWR carry premiums of 21.5%, 22.0%, and 49.2%. But the outbound fare is not the whole decision. Once queue time is simulated across a three-hour shift, the advantage narrows sharply and in some borough-hour combinations disappears. Drivers starting in Queens gain little at any hour, and no borough benefits during the early morning window when return-trip probability is lowest.
-
-The predictive results reinforce this from another direction. Trip length, not destination, determines pay for the overwhelming majority of trips. Airports matter to a small and unusually variable subset of the market, which is why they are simultaneously the most profitable trips to take and the hardest to forecast.
-
 
 
 
