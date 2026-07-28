@@ -48,6 +48,64 @@ The city baseline applies the average local earnings rate over 180 minutes at 58
 JFK dominates recommendations across most boroughs and hours, particularly from 7pm to 2am, while LGA is competitive through the mid-day window, most clearly in Brooklyn and Staten Island, where LGA holds the recommendation almost continuously from around 7am to 6pm. Queens breaks this pattern, since rather than favoring an airport all day, it reverts to the city baseline during the late-morning to early-afternoon stretch (roughly 8:30am to 1:30pm), and even outside that window its airport advantage in dollar terms is consistently among the smallest of the five boroughs, often just $1 to $20, compared to $30 to $50+ elsewhere. The city baseline is otherwise only preferred during the overnight and early morning hours (roughly 3:00 to 6:00), when return trip probability is low and the wait cost outweighs the fare premium. Staten Island shows the highest airport premium in terms of pay, consistent with its far distance from the airports. Queens, by contrast, shows the weakest airport advantage overall, likely because drivers are already close to both airports and face a higher opportunity cost of leaving; the marginal benefit of detouring to an airport pickup is small when you're already near one. Overall, the airport premium is real but time sensitive, with the size of the benefit depending heavily on the borough's baseline proximity to JFK and LGA.
 
 
+#### Prediction
+
+The regression above is explanatory. A separate question is predictive — given what is knowable before a trip is accepted, how accurately can its pay be forecast? The R² of 0.87 does not answer this, since it measures fit on the same data used to estimate the coefficients.
+
+The sample was split by time rather than at random, training on 2024 and holding out 2025. A random split would let the model learn from trips occurring after those it predicts. Mean absolute error was used as the primary metric because it is expressed in dollars and is less dominated by the heavy right tail than RMSE.
+
+Three models were compared. The baseline predicts each trip as the average pay of training trips sharing its borough and hour, using no information about trip length. The log-linear specification was refit on the training period alone, with predictions converted back to dollars using the smearing correction $e^{\sigma^2/2}$. The third is a histogram-based gradient boosting regressor trained on raw pay with absolute-error loss, stopped early at 138 trees.
+
+| Model | MAE | RMSE | Improvement over baseline |
+|---|---|---|---|
+| Borough-hour mean | $11.63 | $17.47 | — |
+| Log-linear OLS | $3.98 | $8.17 | 65.8% |
+| Gradient boosting | $3.56 | $7.41 | 69.4% |
+
+Both models improve substantially on the baseline, though this is less impressive than it appears, since the baseline has no access to trip duration. The informative comparison is between the fitted models. Gradient boosting reduces error a further 11%, roughly forty cents per trip, attributable to interactions the additive specification cannot express.
+
+Permutation importance, measured as the increase in test MAE when each feature is shuffled, confirms the dominance of trip length.
+
+| Feature | MAE increase when shuffled |
+|---|---|
+| trip_duration_min | $11.79 |
+| hour | $0.45 |
+| borough | $0.21 |
+| is_EWR | $0.14 |
+| is_LGA | $0.11 |
+| is_JFK | $0.10 |
+| dow | $0.07 |
+
+Duration accounts for essentially the entire advantage over the baseline. The airport indicators rank EWR, LGA, JFK, matching the ordering of the regression coefficients.
+
+Their small predictive contribution reflects frequency rather than effect size. Airport dropoffs are 5.3% of the sample, so shuffling an airport flag barely moves error averaged across all trips even though the effect on any individual airport trip is large. The regression answers how much more an airport trip pays. Permutation importance answers how much knowing about airports helps predict an arbitrary trip.
+
+Disaggregating error by trip type reveals the model's main weakness.
+
+| Trip type | Mean absolute error | Median absolute error | n |
+|---|---|---|---|
+| Non-airport | $3.46 | $1.41 | 901,361 |
+| Airport | $5.34 | $2.58 | 50,149 |
+
+Error on airport trips is 54% higher, consistent with the heavier right tail and the greater variance in long-distance fares, where tolls, surge, and route variation add noise not captured by duration, hour, and borough. The model is least reliable on the trips this analysis is concerned with. The regression coefficients remain well identified across 1.9 million observations; the narrower point is that a point forecast for any particular airport trip carries more uncertainty than the headline error suggests.
+
+### Limitations
+
+Return-trip probability is proxied by the hourly ratio of pickups to dropoffs, capped at one. This is not a queue model — it ignores how many drivers are already waiting, which is the actual determinant of wait time.
+
+Driver behavior is modeled as a single decision at the start of a shift with no re-optimization. Real drivers respond continuously to conditions, decline trips, and reposition. The three-hour horizon and 58% utilization are fixed inputs rather than estimated quantities.
+
+The analysis observes pay but not costs. Fuel, tolls, depreciation, and the driver's own commute are excluded, all of which fall disproportionately on long airport trips, so the premiums reported here are gross.
+
+The data covers 2024 and 2025 only. Queue dynamics depend on platform policy and driver supply, both of which change, so the borough-hour recommendations are descriptive of this period rather than stable rules.
+
+### Conclusion
+
+The airport premium is real, substantial, and unevenly distributed. Controlling for duration, hour, and borough of origin, dropoffs at JFK, LGA, and EWR carry premiums of 21.5%, 22.0%, and 49.2%. But the outbound fare is not the whole decision. Once queue time is simulated across a three-hour shift, the advantage narrows sharply and in some borough-hour combinations disappears. Drivers starting in Queens gain little at any hour, and no borough benefits during the early morning window when return-trip probability is lowest.
+
+The predictive results reinforce this from another direction. Trip length, not destination, determines pay for the overwhelming majority of trips. Airports matter to a small and unusually variable subset of the market, which is why they are simultaneously the most profitable trips to take and the hardest to forecast.
+
+
 
 
 
